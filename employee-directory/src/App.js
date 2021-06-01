@@ -4,8 +4,12 @@ import Container from "./components/Container"
 
 function App() {
   return (
-    <Header />
+    <>
+    <Header 
+    />
+    <Container />
+    </>
   );
-}
+};
 
 export default App;
