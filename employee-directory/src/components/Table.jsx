@@ -1,9 +1,10 @@
 import React from 'react';
+import './style.css';
 
 const Table = (props) => {
     return (
         <table className="table table-sortable text-center">
-            <thread>
+            <thead>
                 <tr>
                     <th scope="col">
                         <span>Image</span>
@@ -16,6 +17,10 @@ const Table = (props) => {
                     </th>
 
                     <th scope="col">
+                        <span onClick={() => props.sortBy("email")}>Phone Number</span>
+                    </th>
+
+                    <th scope="col">
                         <span onClick={() => props.sortBy("email")}>Email</span>
                     </th>
 
@@ -23,7 +28,7 @@ const Table = (props) => {
                         <span onClick={() => props.sortBy("dob", "date")}>Date of Birth</span>
                     </th>
                 </tr>
-            </thread>
+            </thead>
             <tbody>
                 {props.state.filteredResults.map((result) => {
                     // console.log(result.name);
