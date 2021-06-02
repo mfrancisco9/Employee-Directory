@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { render } from 'react-dom';
 import Header from "./Header"
 import Table from "./Table"
 import apiCall from "../utils/API"
@@ -21,8 +20,6 @@ class Container extends Component {
         };
     }
 
-
-
     componentDidMount() {
         apiCall()
           .then((res) =>
@@ -34,15 +31,17 @@ class Container extends Component {
           .catch((err) => console.log(err));
       }
     
-
     handleInputChange = (e) => {
         const searchString = e.target.value;
         this.setState({ search: searchString });
-        this.filteredResults(searchString.toLowerCase().trim());
+        this.filterResults(searchString.toLowerCase().trim());
+        // console.log(searchString)
+        // console.log(this.state.search)
     }
 
     handleFormSubmit = (e) => {
         e.preventDefault();
+        // console.log("formsubmit")
     }
 
     sortBy = (key, primary = 0, secondary = 0) => {
@@ -71,9 +70,9 @@ class Container extends Component {
           });
     
           this.setState({
-            filteredEmployees: sortedResults,
+            filteredResults: sortedResults,
             sortDirection: {
-              ...this.initialSortDirection,
+              ...this.initialSort,
               [key]: "asc",
             },
           });
@@ -81,24 +80,27 @@ class Container extends Component {
       };
     
 
-    filterResults = (data) => {
+      filterResults = (data) => {
         if (data) {
-            this.setState({
-                filteredResults: this.state.results.filter((result) => {
-                    return (
-                        result.name.first.toLowerCase().concat(" ", result.name.last.toLowerCase()).includes(data) ||
-                        result.phone.includes(data) ||
-                        result.phone.replace(/[^\w\s]/gi, "").includes(data) ||
-                        result.email.includes(data) ||
-                        this.formatDate(result.dob.date.includes(data))
-
-                    )
-                })
-            })
+            console.log(data);
+          this.setState({
+            filteredResults: this.state.results.filter((result) => {
+              return (
+                result.name.first
+                  .toLowerCase().concat(" ", result.name.last.toLowerCase()).includes(data) ||
+                result.phone.includes(data) ||
+                result.phone.replace(/[^\w\s]/gi, "").includes(data) ||
+                result.email.includes(data) ||
+                this.formatDate(result.dob.date).includes(data)
+              );
+            }),
+          });
         } else {
-            this.setState({ filteredResults: this.state.results })
+          this.setState({ filteredResults: this.state.results });
         }
-    }
+      };
+
+// creating dob string
 
     formatDate = (date) => {
         date = new Date(date);
@@ -107,12 +109,18 @@ class Container extends Component {
         dob.push(("0" + date.getDate()).slice(-2));
         dob.push(date.getFullYear());
     
-        return dob.join("-");
+        return dob.join("/");
       };
 
     render() {
         return (
-            <div class="container-fluid">
+
+            <div className="container-fluid">
+                <Header 
+                value={this.state.search}
+                handleFormSubmit={this.handleFormSubmit}
+                handleInputChange={this.handleInputChange}
+                    />
                 <Table 
                 state={this.state}
                 sortBy={this.sortBy}
